@@ -19,7 +19,7 @@ Z-Image-JSON-Prompt 節點旨在解決傳統文字提示詞缺乏組織和難以
 
 #### 1. 安裝
 
-1.  將 `z_image_json_prompt.py` 檔案放置到您的 ComfyUI 自定義節點目錄下（通常是 `custom_nodes/`）。
+1.  將 `z_image_json_prompt.py` 檔案放置到您的 ComfyUI 自定義節點目錄下（通常是 `custom_nodes/`）。或在custom_nodes新建一個資料夾(例如`custom_nodes/z_image_json_prompt/`)將z_image_json_prompt.py和__init__.py放入資料夾
 2.  重新啟動 ComfyUI。
 3.  在節點選單中，您可以在 **`Z-Image`** 類別下找到 **`Z-Image JSON Prompt Generator`** 節點。
 
