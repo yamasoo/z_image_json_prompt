@@ -1,94 +1,64 @@
-📦 ComfyUI 節點安裝與使用說明
-1. 安裝步驟
-🔧 前置需求
-已安裝 ComfyUI（建議使用最新版）
+# Z-Image-JSON-Prompt 🏷️
 
-Python 3.10+
+**一個強大且結構化的 ComfyUI / 節點式 WebUI 提示詞生成器。**
 
-Git（用於下載插件）
+Z-Image-JSON-Prompt 節點旨在解決傳統文字提示詞缺乏組織和難以管理的問題。它將圖像生成的關鍵元素（場景、主體、攝影、燈光、風格）結構化，允許使用者通過清晰的選項列表和預設模板快速生成複雜、高品質的提示詞。
 
-📥 安裝方式
-進入 ComfyUI 的 custom_nodes 資料夾：
+### ✨ 核心功能
 
-bash
-cd ComfyUI/custom_nodes
-將此節點專案放入 custom_nodes 目錄下，例如：
+* **結構化輸入**：將提示詞分解為五大類 (場景、主體、攝影、燈光、風格) 和十五個子選項，使提示詞的構建邏輯清晰。
+* **選項自定義**：節點會自動生成一個名為 `z_image_options` 的目錄，使用者可以輕鬆修改內部的 `.txt` 檔案來**增加或修改提示詞選項**。
+* **內建風格模板**：提供十多種預設風格（如賽博朋克、奇幻魔法、電影人像等），可一鍵應用，加速創作流程。
+* **多語言輸出**：支援 **中文、英文、雙語** 三種模式輸出，滿足不同模型或使用者需求。
+* **多格式輸出**：
+    * **`json_prompt`**：輸出包含所有設定的結構化 JSON 資料，方便追溯、存檔或程式化使用。
+    * **`positive_text`**：輸出四段式（核心、環境、技術、風格）的純文字提示詞，可直接饋入圖像生成模型。
+* **細節等級控制**：可選擇「簡略」、「標準」、「詳細」、「極度詳細」來控制輸出提示詞的豐富度。
 
-bash
-git clone https://github.com/your-repo/comfyui-zimage-jsonprompt.git
-或者直接將 z_image_json_prompt.py 放入 custom_nodes/ZImageJSONPrompting/ 目錄。
+### 🚀 安裝與使用
 
-確認結構如下：
+#### 1. 安裝
 
-程式碼
-ComfyUI/
-└── custom_nodes/
-    └── ZImageJSONPrompting/
-        ├── z_image_json_prompt.py
-        ├── README.md
-        └── (其他資源檔案)
-重新啟動 ComfyUI，節點會自動載入。
+1.  將 `z_image_json_prompt.py` 檔案放置到您的 ComfyUI 自定義節點目錄下（通常是 `custom_nodes/`）。
+2.  重新啟動 ComfyUI。
+3.  在節點選單中，您可以在 **`Z-Image`** 類別下找到 **`Z-Image JSON Prompt Generator`** 節點。
 
-2. 使用方式
-🧩 節點功能
-此節點的核心是 ZImageJSONPrompting 類別，提供以下功能：
+#### 2. 第一次運行
 
-選項管理：場景、角色、攝影、光線、風格等多維度的雙語選項。
+當您第一次運行此節點時，它會自動在您的腳本目錄下創建一個名為 **`z_image_options`** 的資料夾，其中包含：
 
-模板系統：內建多種預設模板（如 Cyberpunk、Fantasy Magic、Sci-fi Futuristic…）。
+* **五個分類資料夾** (`scene`, `subject`, `photography`, `lighting`, `style`)，每個資料夾內有數個 `.txt` 檔案，用於儲存選項。
+* **`templates` 資料夾**，內含預設的 `.json` 模板檔案。
 
-隨機組合：可隨機生成不同的 prompt 組合，適合批量生成或探索多樣化風格。
+您可以編輯這些 `.txt` 或 `.json` 檔案來擴展您的提示詞庫。
 
-JSON 輸出：生成結構化的 JSON，方便與其他節點或外部工具整合。
+#### 3. 節點輸入參數說明
 
-⚙️ 節點輸入/輸出
-輸入：
+| 參數名稱 | 類型 | 說明 | 預設值 |
+| :--- | :--- | :--- | :--- |
+| **`style_template`** | 選擇列表 | 一鍵選擇預設風格模板，將覆蓋對應的選項。 | `無模板 | No Template` |
+| **`language_choice`** | 選擇列表 | 決定輸出提示詞的語言（中文/English/雙語）。 | `雙語 | Bilingual` |
+| **`detail_level`** | 選擇列表 | 控制輸出提示詞的複雜度及描述詞的豐富度。 | `標準 | Standard` |
+| **`negative_prompt`** | 文本輸入 | 負面提示詞，將原樣輸出。 | 預設低品質相關的提示詞。 |
+| **`【...】_...`** | 選擇列表 | 各類型的提示詞選項。選擇 **`隨機 | Random`** 將從對應檔案中隨機抽取。 | `隨機 | Random` |
 
-模板名稱（如 cyberpunk、fantasy_magic）
+#### 4. 節點輸出
 
-或自定義選項（scene、subject、photography、lighting、style）
+| 輸出名稱 | 類型 | 說明 |
+| :--- | :--- | :--- |
+| **`json_prompt`** | `STRING` | 完整的結構化 JSON 輸出，包含所有設定和元數據。 |
+| **`positive_text`** | `STRING` | 四段式的純文字提示詞，可直接連線到 KSampler 或其他提示詞輸入節點。 |
+| **`negative_prompt`** | `STRING` | 負面提示詞文本。 |
 
-輸出：
+### 🤝 貢獻
 
-一個完整的 JSON prompt 字串
+歡迎提交 Pull Request 或 Issues 來改進本專案。請遵循以下步驟：
+1.  Fork 本儲存庫。
+2.  建立新的功能分支 (`git checkout -b feature/AmazingFeature`)。
+3.  提交您的變更 (`git commit -m 'Add some AmazingFeature'`)。
+4.  推送到分支 (`git push origin feature/AmazingFeature`)。
+5.  開啟一個 Pull Request。
 
-可直接餵給 ComfyUI 的 Text-to-Image 節點 或其他 prompt 處理節點
+### 📝 授權許可
 
-📖 使用範例
-1. 使用預設模板
-選擇 cyberpunk 模板，輸出 JSON：
-
-json
-{
-  "scene_description": "霓虹閃爍的賽博朋克街道 | Neon-lit cyberpunk street",
-  "time_atmosphere": "深夜的神秘月光 | Mysterious moonlight late at night",
-  "color_scheme": "青橙配色方案 | Teal and orange color scheme",
-  "art_style": "賽博朋克風格 | Cyberpunk style",
-  "light_source_type": "霓虹燈光 | Neon lights",
-  "render_effects": "鏡頭光暈效果 | Lens flare effect"
-}
-2. 隨機生成
-可呼叫隨機組合功能，輸出不同場景與角色：
-
-json
-{
-  "scene_description": "夢幻的童話森林 | Enchanted fairy tale forest",
-  "character_features": "美麗的精靈族 | Beautiful elf race",
-  "clothing_style": "奇幻的魔法師長袍 | Fantasy mage robe",
-  "pose_expression": "舞蹈中的優雅動作 | Elegant movement while dancing",
-  "shooting_angle": "低角度仰拍 | Low angle looking up",
-  "film_style": "柯達 Portra 柔和膚色 | Kodak Portra soft skin tones"
-}
-3. 與 ComfyUI 整合
-在 Text Prompt 節點 前插入此節點
-
-輸出 JSON → 轉換成文字 prompt → 餵給 Stable Diffusion 節點
-
-可搭配 批量生成 或 隨機化，快速探索不同風格
-
-3. 建議用途
-AI 藝術生成：快速構建複雜的場景與角色描述
-
-VTuber/二次元風格探索：結合日式動漫與奇幻模板
-
-系統化工作流：適合 YAML/Excel 管理，批量生成多樣化 prompt
+本專案採用 [MIT 授權許可](LICENSE) - 詳情請參閱 `LICENSE` 檔案。
