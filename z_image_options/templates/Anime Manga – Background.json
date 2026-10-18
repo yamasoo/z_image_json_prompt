@@ -1,11 +1,11 @@
 {
   "name": "日式動漫 – 背景 | Anime Manga – Background",
   "fields": {
-    "location": "場景位置{城市街道| 山林| 海邊} | Scene location{city street| forest| seaside}",
-    "architecture_style": "建築風格{古典| 未來| 和風} | Architectural style{classical| futuristic| Japanese traditional}",
-    "nature_elements": "自然元素{櫻花| 柳樹| 星空} | Natural elements{cherry blossoms| willows| starry sky}",
-    "weather_conditions": "天氣狀況{晴天| 薄霧| 暴雨} | Weather conditions{clear| misty| heavy rain}",
-    "depth_of_field": "景深效果{前景突出| 背景模糊} | Depth‑of‑field effect{foreground emphasis| background blur}",
-    "ambient_details": "環境細節{路燈| 招牌| 漂浮的紙屑} | Ambient details{street lamps| signboards| drifting paper}"
+    "scene_description": "{城市街道| 山林小徑| 海邊小鎮}的動漫背景美術 | Anime background art of a {city street| mountain forest path| seaside town}",
+    "environment_setting": "{古典| 未來感| 和風}建築，點綴著{櫻花| 垂柳| 星空} | {Classical| Futuristic| Traditional Japanese} architecture with {cherry blossoms| weeping willows| a starry sky}",
+    "time_atmosphere": "{晴朗| 薄霧瀰漫| 暴雨}的天氣 | {Clear| Misty| Stormy} weather",
+    "lens_parameters": "{前景突出| 背景柔焦}的景深效果 | Depth of field with {foreground emphasis| soft background blur}",
+    "render_effects": "豐富的環境細節，如{路燈| 招牌| 飄落的紙片} | Rich ambient details such as {street lamps| shop signs| drifting paper}",
+    "art_style": "日式動漫背景美術風格 | Japanese anime background art style"
   }
 }

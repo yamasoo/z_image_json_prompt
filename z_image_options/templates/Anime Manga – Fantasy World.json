@@ -1,11 +1,11 @@
 {
   "name": "日式動漫 – 幻想世界 | Anime Manga – Fantasy World",
   "fields": {
-    "mythical_setting": "神話設定{浮空島| 魔法森林} | Mythical setting{floating islands| enchanted forest}",
-    "creature_design": "奇幻生物{龍| 妖精| 巨狼} | Fantasy creatures{dragon| fairy| giant wolf}",
-    "magical_element": "魔法元素{光系| 暗系| 元素結界} | Magical element{light| dark| elemental barrier}",
-    "architecture_style": "幻想建築{水晶城| 樹屋} | Fantasy architecture{crystal palace| treehouse}",
-    "color_aura": "色彩光環{彩虹光暈| 幽藍光} | Color aura{rainbow halo| ethereal blue glow}",
-    "atmospheric_effects": "環境特效{浮光| 星屑} | Atmospheric effects{floating motes| stardust}"
+    "scene_description": "{浮空島嶼| 魔法森林}的奇幻世界 | Fantasy world of {floating islands| an enchanted forest}",
+    "character_features": "與{巨龍| 妖精| 巨狼}同行的角色 | Character accompanied by {a dragon| a fairy| a giant wolf}",
+    "environment_setting": "{水晶宮殿| 巨木樹屋}等幻想建築 | Fantasy architecture such as {a crystal palace| a giant treehouse}",
+    "light_effect": "{光系| 暗系| 元素結界}魔法的光芒，{彩虹光暈| 幽藍光輝} | Glow of {light| dark| elemental barrier} magic with {a rainbow halo| an ethereal blue aura}",
+    "render_effects": "{漂浮的光點| 星塵}環境特效 | Atmospheric {floating light motes| stardust}",
+    "art_style": "日式動漫奇幻風格 | Japanese anime fantasy style"
   }
 }

@@ -1,8 +1,8 @@
+import json
 import os
 import random
+import re
 import time
-import json
-import shutil
 from datetime import datetime
 
 class ZImageJSONPrompting:
@@ -157,7 +157,7 @@ class ZImageJSONPrompting:
                 "工作中的專注神情 | Focused expression while working",
                 "驚訝的自然反應 | Natural surprised reaction",
                 "憤怒的強烈情緒表達 | Strong expression of anger",
-                "悲傷的低頭姿勢 | Sad低头pose",
+                "悲傷的低頭姿勢 | Sad head-down pose",
                 "快樂的跳躍姿勢 | Happy jumping pose",
                 "思考的托腮動作 | Thinking with chin in hand",
                 "指揮的專注神情 | Conducting with专注expression",
@@ -572,587 +572,448 @@ class ZImageJSONPrompting:
         }
     }
 
+    # ------------------------------------------------------------------ #
+    # 常數
+    # ------------------------------------------------------------------ #
+    RANDOM_OPTION = "隨機 | Random"
+    NONE_OPTION = "無 | None"
+    NO_TEMPLATE = "無模板 | No Template"
+    RANDOM_TEMPLATE = "隨機模板 | Random Template"
+    TEMPLATE_OVERRIDE = "模板優先 | Template overrides fields"
+    TEMPLATE_FILL_EMPTY = "只填空白欄位 | Fill empty fields only"
+
+    FIELD_KEYS = [
+        "scene_description", "time_atmosphere", "environment_setting",
+        "character_features", "clothing_style", "pose_expression",
+        "lens_parameters", "shooting_angle", "film_style",
+        "light_source_type", "light_effect", "contrast_level",
+        "art_style", "color_scheme", "render_effects",
+    ]
+
+    FIELD_GROUPS = {
+        "scene_description": ("scene", "場景", "場景描述"),
+        "time_atmosphere": ("scene", "場景", "時間氛圍"),
+        "environment_setting": ("scene", "場景", "環境設定"),
+        "character_features": ("subject", "主體", "人物特徵"),
+        "clothing_style": ("subject", "主體", "服裝造型"),
+        "pose_expression": ("subject", "主體", "姿勢表情"),
+        "lens_parameters": ("photography", "攝影", "鏡頭參數"),
+        "shooting_angle": ("photography", "攝影", "拍攝角度"),
+        "film_style": ("photography", "攝影", "膠片風格"),
+        "light_source_type": ("lighting", "燈光", "光源類型"),
+        "light_effect": ("lighting", "燈光", "光效描述"),
+        "contrast_level": ("lighting", "燈光", "對比層次"),
+        "art_style": ("style", "風格", "藝術風格"),
+        "color_scheme": ("style", "風格", "色彩方案"),
+        "render_effects": ("style", "風格", "渲染效果"),
+    }
+
+    # ------------------------------------------------------------------ #
+    # 選項與模板檔案
+    # ------------------------------------------------------------------ #
+    @classmethod
+    def _options_dir(cls):
+        return os.path.join(os.path.dirname(os.path.abspath(__file__)), "z_image_options")
+
     @classmethod
     def initialize_options_dir(cls):
-        """初始化選項目錄和檔案"""
-        options_dir = os.path.join(os.path.dirname(__file__), "z_image_options")
-        
-        # 如果目錄不存在，創建它
-        if not os.path.exists(options_dir):
-            os.makedirs(options_dir)
-            print(f"[Z-Image] 已創建選項目錄: {options_dir}")
-        
-        # 創建分組子目錄（使用英文名稱）
-        for group in cls.OPTION_DATA.keys():
-            group_dir = os.path.join(options_dir, group)
-            if not os.path.exists(group_dir):
-                os.makedirs(group_dir)
-                print(f"[Z-Image] 已創建分組目錄: {group_dir}")
-        
-        # 初始化所有選項檔案
+        """只建立缺少的目錄與檔案；已存在的檔案一律不動，避免覆蓋使用者的修改。"""
+        options_dir = cls._options_dir()
+
         for group_name, files in cls.OPTION_DATA.items():
             group_dir = os.path.join(options_dir, group_name)
+            os.makedirs(group_dir, exist_ok=True)
             for file_name, content_list in files.items():
                 file_path = os.path.join(group_dir, file_name)
-                
-                # 如果檔案不存在，創建它
-                if not os.path.exists(file_path):
-                    try:
-                        with open(file_path, 'w', encoding='utf-8') as f:
-                            # 寫入選項，每個選項佔一行
-                            for item in content_list:
-                                f.write(item + "\n")
-                        print(f"[Z-Image] 已創建設定檔: {group_name}/{file_name}")
-                    except Exception as e:
-                        print(f"[Z-Image] 創建設定檔失敗 {group_name}/{file_name}: {str(e)}")
-                else:
-                    # 如果檔案存在，檢查是否需要更新
-                    try:
-                        with open(file_path, 'r', encoding='utf-8') as f:
-                            existing_lines = [line.strip() for line in f if line.strip()]
-                        
-                        # 如果檔案內容太少，可能是舊版本，重新寫入
-                        if len(existing_lines) < len(content_list) / 2:
-                            with open(file_path, 'w', encoding='utf-8') as f:
-                                for item in content_list:
-                                    f.write(item + "\n")
-                            print(f"[Z-Image] 已更新設定檔: {group_name}/{file_name}")
-                    except Exception as e:
-                        print(f"[Z-Image] 讀取設定檔失敗 {group_name}/{file_name}: {str(e)}")
-        
-        # 創建模板目錄和檔案
+                if os.path.exists(file_path):
+                    continue
+                try:
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        for item in content_list:
+                            f.write(item + "\n")
+                    print(f"[Z-Image] 已創建設定檔: {group_name}/{file_name}")
+                except Exception as e:
+                    print(f"[Z-Image] 創建設定檔失敗 {group_name}/{file_name}: {e}")
+
         templates_dir = os.path.join(options_dir, "templates")
-        if not os.path.exists(templates_dir):
-            os.makedirs(templates_dir)
-            print(f"[Z-Image] 已創建模板目錄: {templates_dir}")
-        
-        # 初始化模板檔案
+        os.makedirs(templates_dir, exist_ok=True)
         for template_id, template_data in cls.DEFAULT_TEMPLATES.items():
             template_file = os.path.join(templates_dir, f"{template_id}.json")
-            if not os.path.exists(template_file):
-                try:
-                    with open(template_file, 'w', encoding='utf-8') as f:
-                        json.dump(template_data, f, ensure_ascii=False, indent=2)
-                    print(f"[Z-Image] 已創建模板檔案: templates/{template_id}.json")
-                except Exception as e:
-                    print(f"[Z-Image] 創建模板檔案失敗 {template_id}.json: {str(e)}")
+            if os.path.exists(template_file):
+                continue
+            try:
+                with open(template_file, 'w', encoding='utf-8') as f:
+                    json.dump(template_data, f, ensure_ascii=False, indent=2)
+                print(f"[Z-Image] 已創建模板檔案: templates/{template_id}.json")
+            except Exception as e:
+                print(f"[Z-Image] 創建模板檔案失敗 {template_id}.json: {e}")
 
     @classmethod
     def load_templates(cls):
-        """載入所有模板"""
-        templates_dir = os.path.join(os.path.dirname(__file__), "z_image_options", "templates")
-        
-        if not os.path.exists(templates_dir):
-            # 如果模板目錄不存在，使用預設模板
+        """載入 templates 目錄下所有 JSON 模板（依檔名排序，讓選單順序固定）。"""
+        templates_dir = os.path.join(cls._options_dir(), "templates")
+        if not os.path.isdir(templates_dir):
             return cls.DEFAULT_TEMPLATES
-        
+
         templates = {}
         try:
-            # 掃描模板目錄中的所有 JSON 檔案
-            for file_name in os.listdir(templates_dir):
-                if file_name.endswith('.json'):
-                    template_id = file_name[:-5]  # 移除 .json 擴展名
-                    template_path = os.path.join(templates_dir, file_name)
-                    
-                    try:
-                        with open(template_path, 'r', encoding='utf-8') as f:
-                            template_data = json.load(f)
-                        
-                        # 確保模板有基本結構
-                        if 'name' in template_data and 'fields' in template_data:
-                            templates[template_id] = template_data
-                        else:
-                            print(f"[Z-Image] 模板檔案格式錯誤: {file_name}")
-                    except Exception as e:
-                        print(f"[Z-Image] 載入模板失敗 {file_name}: {str(e)}")
+            for file_name in sorted(os.listdir(templates_dir)):
+                if not file_name.lower().endswith('.json'):
+                    continue
+                template_id = file_name[:-5]
+                template_path = os.path.join(templates_dir, file_name)
+                try:
+                    with open(template_path, 'r', encoding='utf-8-sig') as f:
+                        template_data = json.load(f)
+                except Exception as e:
+                    print(f"[Z-Image] 載入模板失敗 {file_name}: {e}")
+                    continue
+                if not isinstance(template_data, dict) or 'name' not in template_data or 'fields' not in template_data:
+                    print(f"[Z-Image] 模板檔案格式錯誤: {file_name}")
+                    continue
+                unknown = [k for k in template_data['fields'] if k not in cls.FIELD_GROUPS]
+                if unknown:
+                    print(f"[Z-Image] 模板 {file_name} 含有無法使用的欄位，已忽略: {', '.join(unknown)}")
+                templates[template_id] = template_data
         except Exception as e:
-            print(f"[Z-Image] 掃描模板目錄失敗: {str(e)}")
-        
-        # 如果沒有載入到模板，使用預設模板
-        if not templates:
-            templates = cls.DEFAULT_TEMPLATES
-        
-        return templates
+            print(f"[Z-Image] 掃描模板目錄失敗: {e}")
+
+        return templates or cls.DEFAULT_TEMPLATES
 
     @classmethod
+    def _read_options(cls, field_name):
+        """讀取某欄位的選項清單；讀不到時使用內建選項。"""
+        group = cls.FIELD_GROUPS[field_name][0]
+        file_name = f"{field_name}.txt"
+        file_path = os.path.join(cls._options_dir(), group, file_name)
+        try:
+            with open(file_path, 'r', encoding='utf-8-sig') as f:
+                lines = [line.strip() for line in f if line.strip()]
+            return [opt for opt in lines if opt not in (cls.RANDOM_OPTION, cls.NONE_OPTION)]
+        except Exception as e:
+            print(f"[Z-Image] 警告: 無法從 {file_path} 載入選項: {e}")
+            return list(cls.OPTION_DATA.get(group, {}).get(file_name, []))
+
+    @classmethod
+    def _input_name(cls, field_name):
+        _, group_zh, field_zh = cls.FIELD_GROUPS[field_name]
+        return f"【{group_zh}】_{field_zh}"
+
+    # ------------------------------------------------------------------ #
+    # ComfyUI 介面
+    # ------------------------------------------------------------------ #
+    @classmethod
     def INPUT_TYPES(cls):
-        # 初始化選項目錄和檔案
         cls.initialize_options_dir()
-        
-        # 載入模板
         templates = cls.load_templates()
-        
-        # 生成模板選項列表
-        template_options = [
-            "無模板 | No Template",
-            "隨機模板 | Random Template"  # 新增隨機模板選項
-        ]
+
+        template_options = [cls.NO_TEMPLATE, cls.RANDOM_TEMPLATE]
         for template_id, template_data in templates.items():
-            template_name = template_data.get('name', template_id)
-            template_options.append(f"{template_name} | {template_id}")
-        
-        options_dir = os.path.join(os.path.dirname(__file__), "z_image_options")
-        
-        # 動態生成輸入類型，使用分組前綴
+            template_options.append(f"{template_data.get('name', template_id)} | {template_id}")
+
         input_types = {}
-        
-        # 定義分組映射（使用中文前綴顯示，英文檔案名稱）
-        field_mapping = [
-            # 【場景】組
-            ("【場景】_場景描述", "scene", "scene_description.txt"),
-            ("【場景】_時間氛圍", "scene", "time_atmosphere.txt"),
-            ("【場景】_環境設定", "scene", "environment_setting.txt"),
-            
-            # 【主體】組
-            ("【主體】_人物特徵", "subject", "character_features.txt"),
-            ("【主體】_服裝造型", "subject", "clothing_style.txt"),
-            ("【主體】_姿勢表情", "subject", "pose_expression.txt"),
-            
-            # 【攝影】組
-            ("【攝影】_鏡頭參數", "photography", "lens_parameters.txt"),
-            ("【攝影】_拍攝角度", "photography", "shooting_angle.txt"),
-            ("【攝影】_膠片風格", "photography", "film_style.txt"),
-            
-            # 【燈光】組
-            ("【燈光】_光源類型", "lighting", "light_source_type.txt"),
-            ("【燈光】_光效描述", "lighting", "light_effect.txt"),
-            ("【燈光】_對比層次", "lighting", "contrast_level.txt"),
-            
-            # 【風格】組
-            ("【風格】_藝術風格", "style", "art_style.txt"),
-            ("【風格】_色彩方案", "style", "color_scheme.txt"),
-            ("【風格】_渲染效果", "style", "render_effects.txt"),
-        ]
-        
-        # 為每個字段創建選項列表
-        for field_name, group, file_name in field_mapping:
-            file_path = os.path.join(options_dir, group, file_name)
-            options = ["隨機 | Random", "無 | None"]
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    # 讀取所有非空行
-                    lines = [line.strip() for line in f if line.strip()]
-                    options.extend(lines)
-            except Exception as e:
-                print(f"[Z-Image] 警告: 無法從 {file_path} 載入選項: {e}")
-                # 使用記憶體中的選項作為備份
-                if group in cls.OPTION_DATA and file_name in cls.OPTION_DATA[group]:
-                    options.extend(cls.OPTION_DATA[group][file_name])
-            
-            input_types[field_name] = (options, {"default": "隨機 | Random"})
-        
-        # 添加語言選擇參數
+        for field_name in cls.FIELD_KEYS:
+            options = [cls.RANDOM_OPTION, cls.NONE_OPTION] + cls._read_options(field_name)
+            input_types[cls._input_name(field_name)] = (options, {"default": cls.RANDOM_OPTION})
+
         input_types["language_choice"] = (["中文", "English", "雙語 | Bilingual"], {"default": "雙語 | Bilingual"})
-        
-        # 添加風格模板選擇（包含隨機模板選項）
-        input_types["style_template"] = (template_options, {"default": "無模板 | No Template"})
-        
-        # 添加質量控制參數
-        input_types["detail_level"] = (["簡略 | Simple", "標準 | Standard", "詳細 | Detailed", "極度詳細 | Extremely Detailed"], 
-                                   {"default": "標準 | Standard"})
-        
-        # 添加負面提示
+        input_types["style_template"] = (template_options, {"default": cls.NO_TEMPLATE})
+        input_types["detail_level"] = (["簡略 | Simple", "標準 | Standard", "詳細 | Detailed", "極度詳細 | Extremely Detailed"],
+                                       {"default": "標準 | Standard"})
         input_types["negative_prompt"] = ("STRING", {
             "default": "低質量 | Low quality, 模糊 | Blurry, 變形 | Deformed, 解剖錯誤 | Bad anatomy, 多餘肢體 | Extra limbs, 水印 | Watermark, 簽名 | Signature",
             "multiline": True
         })
 
-        return {"required": input_types}
+        # 新增的輸入放在 optional 的最後面，舊工作流程的 widget 值不會錯位
+        return {
+            "required": input_types,
+            "optional": {
+                "seed": ("INT", {"default": 0, "min": 0, "max": 0xFFFFFFFFFFFFFFFF,
+                                 "tooltip": "固定 seed 可重現同一組隨機結果；0 表示每次都重新隨機。"}),
+                "template_mode": ([cls.TEMPLATE_OVERRIDE, cls.TEMPLATE_FILL_EMPTY],
+                                  {"default": cls.TEMPLATE_OVERRIDE,
+                                   "tooltip": "模板優先：模板定義的欄位會取代隨機或手選的值。只填空白：只填入設為「無」的欄位。"}),
+            },
+        }
 
     RETURN_TYPES = ("STRING", "STRING", "STRING")
     RETURN_NAMES = ("json_prompt", "positive_text", "negative_prompt")
     FUNCTION = "generate_json_prompt"
     CATEGORY = "Z-Image"
 
-    def generate_json_prompt(self, **kwargs):
-        # 確保選項目錄和檔案存在
+    @classmethod
+    def IS_CHANGED(cls, seed=0, **kwargs):
+        # seed 為 0 時每次都重新產生；固定 seed 時讓 ComfyUI 可以快取結果
+        return f"seed:{seed}" if seed else f"{time.time()}"
+
+    def generate_json_prompt(self, seed=0, template_mode=None, **kwargs):
+        self._rng = random.Random(seed) if seed else random.Random()
+        template_mode = template_mode or self.TEMPLATE_OVERRIDE
+
         self.initialize_options_dir()
-        
-        # 載入模板
         templates = self.load_templates()
-        
-        # 提取所有輸入參數
+
         language_choice = kwargs.get("language_choice", "雙語 | Bilingual")
-        style_template = kwargs.get("style_template", "無模板 | No Template")
+        style_template = kwargs.get("style_template", self.NO_TEMPLATE)
         detail_level = kwargs.get("detail_level", "標準 | Standard")
         negative_prompt = kwargs.get("negative_prompt", "")
-        
-        # 處理模板選擇（包含隨機模板）
-        selected_template_id = None
-        random_template_selected = False
-        
-        # 檢查是否選擇了隨機模板
-        if "隨機模板" in style_template or "Random Template" in style_template:
-            random_template_selected = True
-            if templates:
-                # 隨機選擇一個模板（排除"無模板"和"隨機模板"選項）
-                available_templates = list(templates.keys())
-                if available_templates:
-                    selected_template_id = random.choice(available_templates)
-                    print(f"[Z-Image] 已隨機選擇模板: {selected_template_id}")
-        else:
-            # 常規模板選擇邏輯
-            for template_id, template_data in templates.items():
-                template_name = template_data.get('name', template_id)
-                if style_template.startswith(template_name) or template_id in style_template:
-                    selected_template_id = template_id
-                    break
-        
-        # 定義字段映射（去掉前綴的字段名）
-        field_keys = [
-            "scene_description", "time_atmosphere", "environment_setting",
-            "character_features", "clothing_style", "pose_expression",
-            "lens_parameters", "shooting_angle", "film_style",
-            "light_source_type", "light_effect", "contrast_level",
-            "art_style", "color_scheme", "render_effects"
-        ]
-        
-        # 處理所有輸入字段
+
+        selected_template_id, random_template_selected = self._resolve_template(style_template, templates)
+
         fields = {}
-        for key in field_keys:
-            # 將key轉換為中文顯示名稱以匹配輸入參數
-            chinese_name = self._get_chinese_field_name(key)
-            prefixed_key = f"【{self._get_group_chinese(key)}】_{chinese_name}"
-            value = kwargs.get(prefixed_key, "隨機 | Random")
+        for key in self.FIELD_KEYS:
+            value = kwargs.get(self._input_name(key), self.RANDOM_OPTION)
             fields[key] = self._process_field_value(key, value, language_choice)
-        
-        # 應用風格模板（如果選擇了模板）
-        if selected_template_id and selected_template_id in templates:
-            fields = self._apply_style_template(fields, selected_template_id, templates, language_choice, random_template_selected)
-        
-        # 根據細節等級調整
+
+        if selected_template_id:
+            fields = self._apply_style_template(fields, selected_template_id, templates, language_choice,
+                                                random_template_selected, template_mode)
+
         fields = self._adjust_detail_level(fields, detail_level, language_choice)
-        
-        # 構建詳細的 JSON 結構
+        negative_out = self._process_list(negative_prompt, language_choice)
+
         json_data = {
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
-                "generator": "Z-Image JSON Prompt Generator v3.1",
+                "generator": "Z-Image JSON Prompt Generator v3.2",
+                "seed": seed,
                 "language": language_choice,
                 "style_template": selected_template_id if selected_template_id else "none",
                 "is_random_template": random_template_selected,
+                "template_mode": template_mode,
                 "detail_level": detail_level
             },
-            
             "scene_settings": {
                 "description": fields["scene_description"],
                 "time_atmosphere": fields["time_atmosphere"],
                 "environment": fields["environment_setting"]
             },
-            
             "subject_description": {
                 "character": fields["character_features"],
                 "clothing": fields["clothing_style"],
                 "pose_expression": fields["pose_expression"]
             },
-            
             "photography_technique": {
                 "lens": fields["lens_parameters"],
                 "angle": fields["shooting_angle"],
                 "film_style": fields["film_style"]
             },
-            
             "lighting_effects": {
                 "light_source": fields["light_source_type"],
                 "effect": fields["light_effect"],
                 "contrast": fields["contrast_level"]
             },
-            
             "style_rendering": {
                 "art_style": fields["art_style"],
                 "color_scheme": fields["color_scheme"],
                 "render_effects": fields["render_effects"],
-                "negative_guidance": self._process_language(negative_prompt, language_choice)
+                "negative_guidance": negative_out
             }
         }
 
-        # 生成 JSON 字串
         json_output = json.dumps(json_data, ensure_ascii=False, indent=2)
+        positive_text = self._generate_four_part_text(fields, language_choice, detail_level,
+                                                      random_template_selected, selected_template_id, templates)
+        return (json_output, positive_text, negative_out)
 
-        # 生成四段式文本版本
-        positive_text = self._generate_four_part_text(fields, language_choice, detail_level, random_template_selected, selected_template_id, templates)
+    # ------------------------------------------------------------------ #
+    # 模板
+    # ------------------------------------------------------------------ #
+    def _resolve_template(self, style_template, templates):
+        """回傳 (template_id, 是否為隨機模板)。選單字串格式為「名稱 | template_id」。"""
+        if not style_template or style_template == self.NO_TEMPLATE:
+            return None, False
+        if style_template == self.RANDOM_TEMPLATE:
+            if not templates:
+                return None, True
+            template_id = self._rng.choice(sorted(templates))
+            print(f"[Z-Image] 已隨機選擇模板: {template_id}")
+            return template_id, True
+        template_id = style_template.rsplit(" | ", 1)[-1].strip()
+        if template_id in templates:
+            return template_id, False
+        # 相容舊工作流程裡只存了模板名稱的情況
+        for tid, data in templates.items():
+            if data.get('name') and style_template.startswith(data['name']):
+                return tid, False
+        print(f"[Z-Image] 找不到模板: {style_template}")
+        return None, False
 
-        return (json_output, positive_text, negative_prompt)
+    def _apply_style_template(self, fields, template_id, templates, language_choice,
+                              is_random=False, template_mode=None):
+        template_fields = templates.get(template_id, {}).get('fields', {})
+        fill_empty_only = template_mode == self.TEMPLATE_FILL_EMPTY
 
-    def _get_chinese_field_name(self, field_name):
-        """將英文字段名轉換為中文顯示名稱"""
-        name_mapping = {
-            "scene_description": "場景描述",
-            "time_atmosphere": "時間氛圍",
-            "environment_setting": "環境設定",
-            "character_features": "人物特徵",
-            "clothing_style": "服裝造型",
-            "pose_expression": "姿勢表情",
-            "lens_parameters": "鏡頭參數",
-            "shooting_angle": "拍攝角度",
-            "film_style": "膠片風格",
-            "light_source_type": "光源類型",
-            "light_effect": "光效描述",
-            "contrast_level": "對比層次",
-            "art_style": "藝術風格",
-            "color_scheme": "色彩方案",
-            "render_effects": "渲染效果"
-        }
-        return name_mapping.get(field_name, field_name)
-
-    def _get_group_chinese(self, field_name):
-        """根據字段名返回所屬分組（中文）"""
-        group_mapping = {
-            "scene_description": "場景", "time_atmosphere": "場景", "environment_setting": "場景",
-            "character_features": "主體", "clothing_style": "主體", "pose_expression": "主體",
-            "lens_parameters": "攝影", "shooting_angle": "攝影", "film_style": "攝影",
-            "light_source_type": "燈光", "light_effect": "燈光", "contrast_level": "燈光",
-            "art_style": "風格", "color_scheme": "風格", "render_effects": "風格"
-        }
-        return group_mapping.get(field_name, "未知")
-
-    def _get_group(self, field_name):
-        """根據字段名返回所屬分組（英文）"""
-        group_mapping = {
-            "scene_description": "scene", "time_atmosphere": "scene", "environment_setting": "scene",
-            "character_features": "subject", "clothing_style": "subject", "pose_expression": "subject",
-            "lens_parameters": "photography", "shooting_angle": "photography", "film_style": "photography",
-            "light_source_type": "lighting", "light_effect": "lighting", "contrast_level": "lighting",
-            "art_style": "style", "color_scheme": "style", "render_effects": "style"
-        }
-        return group_mapping.get(field_name, "unknown")
-
-    def _process_field_value(self, field_name, value, language_choice):
-        """處理字段值，包括隨機選擇和語言處理"""
-        if value == "隨機 | Random":
-            # 從對應文件中隨機選擇
-            group = self._get_group(field_name)
-            options_dir = os.path.join(os.path.dirname(__file__), "z_image_options")
-            file_name = f"{field_name}.txt"
-            file_path = os.path.join(options_dir, group, file_name)
-            
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    options = [line.strip() for line in f if line.strip()]
-                    # 過濾掉"隨機 | Random"和"無 | None"選項
-                    valid_options = [opt for opt in options if opt not in ["隨機 | Random", "無 | None"]]
-                    if valid_options:
-                        selected = random.choice(valid_options)
-                        return self._process_language(selected, language_choice)
-            except Exception as e:
-                print(f"[Z-Image] 警告: 無法為 {field_name} 載入隨機選項: {e}")
-                # 使用記憶體中的選項作為備份
-                if group in self.OPTION_DATA and file_name in self.OPTION_DATA[group]:
-                    valid_options = self.OPTION_DATA[group][file_name]
-                    if valid_options:
-                        selected = random.choice(valid_options)
-                        return self._process_language(selected, language_choice)
-            
-            return ""
-        elif value == "無 | None":
-            return ""
-        else:
-            return self._process_language(value, language_choice)
-
-    def _process_language(self, text, language_choice):
-        """根據語言選擇處理文本"""
-        if not text:
-            return ""
-        
-        if language_choice == "中文":
-            # 只返回中文部分
-            parts = text.split(" | ")
-            return parts[0].strip() if len(parts) > 0 else text
-        elif language_choice == "English":
-            # 只返回英文部分
-            parts = text.split(" | ")
-            return parts[1].strip() if len(parts) > 1 else text
-        else:  # 雙語
-            return text
-
-    def _apply_style_template(self, fields, template_id, templates, language_choice, is_random=False):
-        """應用風格模板"""
-        if template_id not in templates:
-            return fields
-        
-        template_data = templates[template_id]
-        template_fields = template_data.get('fields', {})
-        
-        # 如果使用隨機模板，可以選擇性地只應用部分字段
-        if is_random:
-            # 隨機決定應用哪些模板字段（增加多樣性）
-            for key, value in template_fields.items():
-                if key in fields and random.random() > 0.3:  # 70%機率應用模板字段
-                    # 檢查是否已有值，如果沒有則應用模板值
-                    if not fields[key] or fields[key] == "無" or fields[key] == "None":
-                        fields[key] = self._process_language(value, language_choice)
-        else:
-            # 完整應用模板
-            for key, value in template_fields.items():
-                if key in fields and (not fields[key] or fields[key] == "無" or fields[key] == "None"):
-                    fields[key] = self._process_language(value, language_choice)
-        
+        for key, value in template_fields.items():
+            if key not in fields:
+                continue  # 不認得的欄位（載入時已提示）
+            if fill_empty_only and fields[key]:
+                continue
+            # 隨機模板只套用約 70% 的欄位，保留一些隨機變化
+            if is_random and self._rng.random() < 0.3:
+                continue
+            fields[key] = self._process_language(self._expand_choices(value), language_choice)
         return fields
 
-    def _adjust_detail_level(self, fields, detail_level, language_choice):
-        """根據細節等級調整字段內容"""
-        # 提取細節等級名稱（去除語言部分）
-        if " | " in detail_level:
-            detail_level_name = detail_level.split(" | ")[0]
+    # ------------------------------------------------------------------ #
+    # 文字處理
+    # ------------------------------------------------------------------ #
+    @staticmethod
+    def _split_bilingual(text):
+        """以大括號外的第一個「|」把「中文 | English」切成兩半；沒有分隔符時回傳 (text, None)。"""
+        depth = 0
+        for i, ch in enumerate(text):
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth = max(0, depth - 1)
+            elif ch == "|" and depth == 0:
+                return text[:i].strip(), text[i + 1:].strip()
+        return text.strip(), None
+
+    def _expand_choices(self, text):
+        """展開 {甲| 乙| 丙} 隨機選項；中英文兩半使用同一個選擇，避免翻譯對不上。"""
+        if "{" not in text:
+            return text
+        zh, en = self._split_bilingual(text)
+        picks = []
+
+        def expand(part, reuse):
+            counter = iter(range(10 ** 6))
+
+            def repl(match):
+                options = [o.strip() for o in match.group(1).split("|")]
+                n = next(counter)
+                if reuse and n < len(picks):
+                    idx = picks[n] % len(options)
+                else:
+                    idx = self._rng.randrange(len(options))
+                    picks.append(idx)
+                return options[idx]
+
+            return re.sub(r"\{([^{}]*)\}", repl, part)
+
+        zh = expand(zh, reuse=False)
+        if en is None:
+            return zh
+        return f"{zh} | {expand(en, reuse=True)}"
+
+    def _process_field_value(self, field_name, value, language_choice):
+        if value == self.RANDOM_OPTION:
+            options = self._read_options(field_name)
+            if not options:
+                return ""
+            value = self._rng.choice(options)
+        elif value == self.NONE_OPTION or not value:
+            return ""
+        return self._process_language(self._expand_choices(value), language_choice)
+
+    def _process_language(self, text, language_choice):
+        if not text:
+            return ""
+        zh, en = self._split_bilingual(text)
+        if language_choice == "中文":
+            return zh
+        if language_choice == "English":
+            return en if en else zh
+        return f"{zh} | {en}" if en else zh
+
+    def _process_list(self, text, language_choice):
+        """逐項處理逗號分隔的雙語清單，例如負面提示詞。"""
+        if not text:
+            return ""
+        if language_choice not in ("中文", "English"):
+            return text.strip()
+        items = [item for item in re.split(r"\s*[,，、]\s*|\n+", text) if item.strip()]
+        processed = [self._process_language(item, language_choice) for item in items]
+        return ("，" if language_choice == "中文" else ", ").join(p for p in processed if p)
+
+    def _combine(self, value, zh_add, en_add, language_choice, prefix):
+        """把修飾語加到已處理過語言的欄位值前面（prefix=True）或後面。"""
+        if language_choice == "中文":
+            return f"{zh_add}{value}" if prefix else f"{value}{zh_add}"
+        if language_choice == "English":
+            return f"{en_add} {value}" if prefix else f"{value}{en_add}"
+        zh, en = self._split_bilingual(value)
+        if prefix:
+            zh_out, en_out = f"{zh_add}{zh}", f"{en_add} {en}" if en else None
         else:
-            detail_level_name = detail_level
-            
+            zh_out, en_out = f"{zh}{zh_add}", f"{en}{en_add}" if en else None
+        return f"{zh_out} | {en_out}" if en_out else zh_out
+
+    def _adjust_detail_level(self, fields, detail_level, language_choice):
+        detail_level_name = detail_level.split(" | ")[0]
+
         if detail_level_name == "簡略":
-            # 簡略模式：只保留核心字段
-            core_fields = ["scene_description", "character_features", "art_style"]
+            core_fields = ("scene_description", "character_features", "art_style")
             for key in fields:
                 if key not in core_fields:
                     fields[key] = ""
         elif detail_level_name == "詳細":
-            # 詳細模式：添加更多描述詞
             descriptive_words = {
-                "scene_description": ["精緻的 | Exquisite", "細膩的 | Detailed", "生動的 | Vivid"],
-                "character_features": ["獨特的 | Unique", "鮮明的 | Distinct", "立體的 | Three-dimensional"],
-                "art_style": ["強烈的 | Strong", "突出的 | Prominent", "明顯的 | Obvious"]
+                "scene_description": [("精緻的", "Exquisite"), ("細膩的", "Detailed"), ("生動的", "Vivid")],
+                "character_features": [("獨特的", "Unique"), ("鮮明的", "Distinct"), ("立體的", "Three-dimensional")],
+                "art_style": [("強烈的", "Strong"), ("突出的", "Prominent"), ("明顯的", "Obvious")],
             }
-            
             for key, words in descriptive_words.items():
-                if fields[key] and not any(fields[key].startswith(word.split(" | ")[0]) for word in words):
-                    selected_word = random.choice(words)
-                    fields[key] = f"{self._process_language(selected_word, language_choice)}{fields[key]}"
+                if not fields[key]:
+                    continue
+                if any(fields[key].startswith(zh) or fields[key].startswith(en) for zh, en in words):
+                    continue
+                zh, en = self._rng.choice(words)
+                fields[key] = self._combine(fields[key], zh, en, language_choice, prefix=True)
         elif detail_level_name == "極度詳細":
-            # 極度詳細模式：添加更多細節描述
             detail_descriptions = {
-                "scene_description": "，充滿豐富的細節和層次 | , full of rich details and layers",
-                "character_features": "，具有獨特的個人特質和表情 | , with unique personal characteristics and expressions",
-                "clothing_style": "，展現精緻的材質和做工 | , showing exquisite materials and workmanship",
-                "art_style": "，體現強烈的視覺衝擊和藝術感 | , reflecting strong visual impact and artistic sense"
+                "scene_description": ("，充滿豐富的細節和層次", ", full of rich details and layers"),
+                "character_features": ("，具有獨特的個人特質和表情", ", with unique personal characteristics and expressions"),
+                "clothing_style": ("，展現精緻的材質和做工", ", showing exquisite materials and workmanship"),
+                "art_style": ("，體現強烈的視覺衝擊和藝術感", ", reflecting strong visual impact and artistic sense"),
             }
-            
-            for key, desc in detail_descriptions.items():
-                if fields[key]:
-                    desc_part = desc.split(" | ")[0] if language_choice == "中文" else desc.split(" | ")[1]
-                    if not fields[key].endswith(desc_part):
-                        fields[key] = f"{fields[key]}{desc_part}"
-        
+            for key, (zh, en) in detail_descriptions.items():
+                if fields[key] and zh not in fields[key] and en not in fields[key]:
+                    fields[key] = self._combine(fields[key], zh, en, language_choice, prefix=False)
         return fields
 
-    def _generate_four_part_text(self, fields, language_choice, detail_level, is_random_template=False, template_id=None, templates=None):
-        """生成四段式文本提示"""
-        # 提取細節等級名稱
-        if " | " in detail_level:
-            detail_level_name = detail_level.split(" | ")[0]
-        else:
-            detail_level_name = detail_level
-            
+    def _generate_four_part_text(self, fields, language_choice, detail_level,
+                                 is_random_template=False, template_id=None, templates=None):
+        """生成四段式文本提示：核心、環境、技術、風格。"""
+        detail_level_name = detail_level.split(" | ")[0]
+        joiner = ", " if language_choice == "English" else "，"
         parts = []
-        
-        # 添加模板資訊（如果有）
-        if is_random_template and template_id and templates and template_id in templates:
-            template_name = templates[template_id].get('name', template_id)
-            if " | " in template_name:
-                template_display = template_name.split(" | ")[0]
-            else:
-                template_display = template_name
-                
-            if language_choice == "中文":
-                parts.append(f",{template_display}")
-            elif language_choice == "English":
-                parts.append(f",{template_display}")
-            else:
-                parts.append(f",{template_display}")
-        
-        # 第一段：核心描述（場景 + 主體 + 姿勢）
-        part1 = []
-        if fields["scene_description"]:
-            part1.append(fields["scene_description"])
-        if fields["character_features"]:
-            part1.append(fields["character_features"])
-        if fields["pose_expression"]:
-            part1.append(fields["pose_expression"])
-        
-        if part1:
-            if language_choice == "中文":
-                parts.append(f",{'，'.join(part1)}")
-            elif language_choice == "English":
-                parts.append(f",{', '.join(part1)}")
-            else:
-                parts.append(f",{'，'.join(part1)}")
-        
-        # 第二段：環境細節（時間 + 環境）
-        part2 = []
-        if fields["time_atmosphere"]:
-            part2.append(fields["time_atmosphere"])
-        if fields["environment_setting"]:
-            part2.append(fields["environment_setting"])
-        if fields["clothing_style"]:
-            if language_choice == "English":
-                part2.append(f"wearing {fields['clothing_style']}")
-            else:
-                part2.append(f"穿著{fields['clothing_style']}")
-        
-        if part2:
-            if language_choice == "中文":
-                parts.append(f",{'，'.join(part2)}")
-            elif language_choice == "English":
-                parts.append(f",{', '.join(part2)}")
-            else:
-                parts.append(f",{'，'.join(part2)}")
-        
-        # 第三段：技術參數（攝影 + 燈光）
-        part3 = []
-        if fields["lens_parameters"]:
-            part3.append(fields["lens_parameters"])
-        if fields["shooting_angle"]:
-            part3.append(fields["shooting_angle"])
-        if fields["light_source_type"]:
-            part3.append(fields["light_source_type"])
-        if fields["light_effect"]:
-            part3.append(fields["light_effect"])
-        if fields["film_style"]:
-            part3.append(fields["film_style"])
-        if fields["contrast_level"]:
-            part3.append(fields["contrast_level"])
-        
-        if part3:
-            if language_choice == "中文":
-                parts.append(f",{'，'.join(part3)}")
-            elif language_choice == "English":
-                parts.append(f",{', '.join(part3)}")
-            else:
-                parts.append(f",{'，'.join(part3)}")
-        
-        # 第四段：風格強化（藝術 + 色彩 + 渲染）
-        part4 = []
-        if fields["art_style"]:
-            part4.append(fields["art_style"])
-        if fields["color_scheme"]:
-            part4.append(fields["color_scheme"])
-        if fields["render_effects"]:
-            part4.append(fields["render_effects"])
-        
-        # 根據細節等級添加額外描述
-        if detail_level_name in ["詳細", "極度詳細"]:
-            if language_choice == "中文":
-                quality_words = ["高質量", "高解析度", "專業級", "大師級"]
-                part4.append(f"{random.choice(quality_words)}作品")
-            elif language_choice == "English":
-                quality_words = ["High quality", "High resolution", "Professional grade", "Masterpiece"]
-                part4.append(f"{random.choice(quality_words)} work")
-            else:
-                quality_words = ["高質量 | High quality", "高解析度 | High resolution", "專業級 | Professional grade", "大師級 | Masterpiece"]
-                part4.append(f"{random.choice(quality_words)}作品 | work")
-        
-        if part4:
-            if language_choice == "中文":
-                parts.append(f",{'，'.join(part4)}")
-            elif language_choice == "English":
-                parts.append(f",{', '.join(part4)}")
-            else:
-                parts.append(f",{'，'.join(part4)}")
-        
-        # 合併所有段落
-        separator = "\n\n" if detail_level_name in ["詳細", "極度詳細"] else "\n"
-        return separator.join(parts)
 
-    @classmethod
-    def IS_CHANGED(cls, **kwargs):
-        return f"{time.time()}"
+        if is_random_template and template_id and templates and template_id in templates:
+            parts.append(self._process_language(templates[template_id].get('name', template_id), language_choice))
+
+        def add(keys, extra=None):
+            items = [fields[k] for k in keys if fields[k]]
+            if extra:
+                items.extend(extra)
+            if items:
+                parts.append(joiner.join(items))
+
+        # 第一段：核心描述
+        add(["scene_description", "character_features", "pose_expression"])
+
+        # 第二段：環境細節（含服裝）
+        clothing = []
+        if fields["clothing_style"]:
+            clothing.append(self._combine(fields["clothing_style"], "穿著", "wearing", language_choice, prefix=True))
+        add(["time_atmosphere", "environment_setting"], clothing)
+
+        # 第三段：攝影與燈光
+        add(["lens_parameters", "shooting_angle", "light_source_type", "light_effect", "film_style", "contrast_level"])
+
+        # 第四段：風格強化
+        quality = []
+        if detail_level_name in ("詳細", "極度詳細"):
+            zh, en = self._rng.choice([("高質量", "High quality"), ("高解析度", "High resolution"),
+                                       ("專業級", "Professional grade"), ("大師級", "Masterpiece")])
+            quality.append(self._process_language(f"{zh}作品 | {en} work", language_choice))
+        add(["art_style", "color_scheme", "render_effects"], quality)
+
+        separator = "\n\n" if detail_level_name in ("詳細", "極度詳細") else "\n"
+        return separator.join(parts)
 
 
 # 註冊節點
