@@ -1,11 +1,12 @@
 {
   "name": "日式動漫 – 賽博朋克城市 | Anime Manga – Cyberpunk City",
   "fields": {
-    "cityscape_vibe": "城市氛圍{霓虹閃爍| 高樓林立} | City vibe{neon flicker| skyscraper forest}",
-    "technology_level": "科技水平{全息廣告| 機械義肢} | Tech level{holographic ads| cybernetic limbs}",
-    "rain_effects": "雨天效果{雨滴| 濕潤路面} | Rain effects{dripping| wet streets}",
-    "neon_palette": "霓虹調色板{紫藍| 粉紅| 電綠} | Neon palette{purple‑blue| pink| electric green}",
-    "character_style": "角色風格{朋克髮型| 光學眼鏡} | Character style{spiky hair| optical glasses}",
-    "ambient_noise_visual": "噪音視覺化{聲波線| 電流} | Ambient noise visualization{sound wave lines| electric arcs}"
+    "scene_description": "{霓虹閃爍| 摩天大樓林立}的動漫賽博朋克城市 | Anime cyberpunk city with {flickering neon| a forest of skyscrapers}",
+    "environment_setting": "{全息廣告| 機械義肢}隨處可見的高科技街區 | High-tech district full of {holographic ads| cybernetic limbs}",
+    "time_atmosphere": "下雨的夜晚，{雨滴落下| 濕潤反光的路面} | Rainy night with {falling raindrops| wet reflective streets}",
+    "color_scheme": "{紫藍| 粉紅| 電光綠}霓虹配色 | {Purple-blue| Pink| Electric green} neon palette",
+    "character_features": "{刺蝟頭龐克髮型| 戴著光學眼鏡}的角色 | Character with {spiky punk hair| optical glasses}",
+    "render_effects": "{聲波線| 電弧}視覺效果 | {Sound-wave line| Electric arc} visual effects",
+    "art_style": "日式動漫賽博朋克風格 | Japanese anime cyberpunk style"
   }
 }
