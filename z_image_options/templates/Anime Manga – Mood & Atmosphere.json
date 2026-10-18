@@ -1,0 +1,11 @@
+{
+  "name": "日式動漫 – 情緒氛圍 | Anime Manga – Mood & Atmosphere",
+  "fields": {
+    "emotional_tone": "情緒基調{溫暖| 陰暗| 神祕} | Emotional tone{warm| dark| mysterious}",
+    "ambient_lighting": "環境光線{柔光| 背光| 聚光} | Ambient lighting{soft| backlight| spot}",
+    "color_palette": "色調配色{暖色系| 冷色系| 單色} | Color palette{warm tones| cool tones| monochrome}",
+    "mist_or_fog": "薄霧或霧氣效果{輕霧| 濃霧} | Fog effect{light mist| dense fog}",
+    "glow_effects": "發光效果{螢光| 星光| 光斑} | Glow effects{neon| starlight| light spots}",
+    "overall_mood": "整體氛圍描述{寧靜| 激昂| 懸疑} | Overall mood description{tranquil| intense| suspenseful}"
+  }
+}

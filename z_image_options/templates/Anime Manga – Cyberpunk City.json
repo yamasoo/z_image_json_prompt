@@ -1,0 +1,11 @@
+{
+  "name": "日式動漫 – 賽博朋克城市 | Anime Manga – Cyberpunk City",
+  "fields": {
+    "cityscape_vibe": "城市氛圍{霓虹閃爍| 高樓林立} | City vibe{neon flicker| skyscraper forest}",
+    "technology_level": "科技水平{全息廣告| 機械義肢} | Tech level{holographic ads| cybernetic limbs}",
+    "rain_effects": "雨天效果{雨滴| 濕潤路面} | Rain effects{dripping| wet streets}",
+    "neon_palette": "霓虹調色板{紫藍| 粉紅| 電綠} | Neon palette{purple‑blue| pink| electric green}",
+    "character_style": "角色風格{朋克髮型| 光學眼鏡} | Character style{spiky hair| optical glasses}",
+    "ambient_noise_visual": "噪音視覺化{聲波線| 電流} | Ambient noise visualization{sound wave lines| electric arcs}"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "奇幻魔法 | Fantasy Magic",
+  "fields": {
+    "scene_description": "夢幻的童話森林 | Enchanted fairy tale forest",
+    "time_atmosphere": "霧氣瀰漫的清晨 | Misty morning",
+    "color_scheme": "柔和粉彩色調 | Soft pastel colors",
+    "art_style": "奇幻藝術風格 | Fantasy art style",
+    "light_source_type": "自然日光 | Natural daylight",
+    "render_effects": "體積霧效果 | Volumetric fog effect"
+  }
+}

@@ -1,0 +1,8 @@
+# Python 快取
+__pycache__/
+*.pyc
+
+# 本機備份與草稿
+*.bak
+*.bak2
+*.wrong

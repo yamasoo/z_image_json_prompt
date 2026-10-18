@@ -1,0 +1,11 @@
+{
+  "name": "日式動漫 – 動作場景 | Anime Manga – Action Scene",
+  "fields": {
+    "action_type": "動作類型{衝刺| 劍擊| 魔法施放} | Action type{dash| sword strike| spell casting}",
+    "dynamic_angle": "動態視角{低角度| 俯視| 側面} | Dynamic camera angle{low| top‑down| side}",
+    "motion_blur": "動作模糊效果{速度線| 殘影} | Motion blur effects{speed lines| after‑image}",
+    "impact_visuals": "衝擊視覺{爆炸| 光芒| 碎片} | Impact visuals{explosion| flash| debris}",
+    "character_focus": "角色焦點{特寫| 遠景} | Character focus{close‑up| long shot}",
+    "sound_visualization": "聲音視覺化{音波| 回聲線} | Sound visualization{waveforms| echo lines}"
+  }
+}

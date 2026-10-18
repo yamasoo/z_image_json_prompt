@@ -1,0 +1,11 @@
+{
+  "name": "恐怖驚悚 | Horror Thriller",
+  "fields": {
+    "scene_description": "廢棄的工業廠房 | Abandoned industrial factory",
+    "time_atmosphere": "暴風雨前的壓抑氛圍 | Oppressive atmosphere before storm",
+    "color_scheme": "恐怖暗黑色系 | Horror dark color scheme",
+    "art_style": "恐怖驚悚風格 | Horror thriller style",
+    "light_source_type": "手電筒光束 | Flashlight beam",
+    "render_effects": "暗角效果 | Vignetting effect"
+  }
+}

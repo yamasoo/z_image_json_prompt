@@ -1,0 +1,11 @@
+{
+  "name": "日式動漫 – 背景 | Anime Manga – Background",
+  "fields": {
+    "location": "場景位置{城市街道| 山林| 海邊} | Scene location{city street| forest| seaside}",
+    "architecture_style": "建築風格{古典| 未來| 和風} | Architectural style{classical| futuristic| Japanese traditional}",
+    "nature_elements": "自然元素{櫻花| 柳樹| 星空} | Natural elements{cherry blossoms| willows| starry sky}",
+    "weather_conditions": "天氣狀況{晴天| 薄霧| 暴雨} | Weather conditions{clear| misty| heavy rain}",
+    "depth_of_field": "景深效果{前景突出| 背景模糊} | Depth‑of‑field effect{foreground emphasis| background blur}",
+    "ambient_details": "環境細節{路燈| 招牌| 漂浮的紙屑} | Ambient details{street lamps| signboards| drifting paper}"
+  }
+}

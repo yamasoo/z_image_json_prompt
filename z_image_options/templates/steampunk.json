@@ -1,0 +1,11 @@
+{
+  "name": "蒸汽龐克 | Steampunk",
+  "fields": {
+    "scene_description": "蒸汽龐克風格城市 | Steampunk-style city",
+    "time_atmosphere": "薄霧籠罩的夜晚 | Thin fog shrouded night",
+    "color_scheme": "復古褐黃色系 | Vintage sepia color scheme",
+    "art_style": "蒸汽龐克風格 | Steampunk style",
+    "light_source_type": "煤氣燈光 | Gas lamp light",
+    "render_effects": "電影顆粒效果 | Cinematic film grain"
+  }
+}

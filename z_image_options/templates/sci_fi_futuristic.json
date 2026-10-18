@@ -1,0 +1,11 @@
+{
+  "name": "科幻未來 | Sci-fi Futuristic",
+  "fields": {
+    "scene_description": "科幻的太空站內景 | Sci-fi space station interior",
+    "time_atmosphere": "多雲的陰天光線 | Cloudy overcast light",
+    "color_scheme": "金屬色系搭配 | Metallic color palette",
+    "art_style": "科幻未來風格 | Sci-fi futuristic style",
+    "light_source_type": "LED燈帶光線 | LED strip lighting",
+    "render_effects": "光線追蹤反射 | Ray-traced reflections"
+  }
+}

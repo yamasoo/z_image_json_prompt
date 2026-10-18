@@ -1,0 +1,11 @@
+{
+  "name": "街頭潮流 | Street Fashion",
+  "fields": {
+    "scene_description": "繁忙的現代都市街頭 | Busy modern city street",
+    "time_atmosphere": "雨後的都市夜景 | City night scene after rain",
+    "color_scheme": "霓虹色彩搭配 | Neon color palette",
+    "art_style": "塗鴉藝術風格 | Graffiti art style",
+    "light_source_type": "RGB彩色燈光 | RGB colored lighting",
+    "render_effects": "動態模糊效果 | Motion blur effect"
+  }
+}

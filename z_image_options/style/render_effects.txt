@@ -1,0 +1,25 @@
+全局照明效果 | Global illumination effect
+景深模糊效果 | Depth of field blur effect
+動態模糊效果 | Motion blur effect
+體積霧效果 | Volumetric fog effect
+鏡頭光暈效果 | Lens flare effect
+色差效果 | Chromatic aberration effect
+電影顆粒效果 | Cinematic film grain
+光線追蹤反射 | Ray-traced reflections
+次表面散射 | Subsurface scattering
+環境光遮蔽 | Ambient occlusion
+運動模糊效果 | Motion blur effect
+散景效果 | Bokeh effect
+眩光效果 | Glare effect
+漏光效果 | Light leak effect
+暗角效果 | Vignetting effect
+銳化效果 | Sharpening effect
+模糊效果 | Blur effect
+馬賽克效果 | Mosaic effect
+像素化效果 | Pixelation effect
+故障藝術效果 | Glitch art effect
+雙重曝光效果 | Double exposure effect
+HDR效果 | HDR effect
+漫畫網點效果 | Comic halftone effect
+素描線條效果 | Sketch line effect
+水墨渲染效果 | Ink wash rendering effect

@@ -1,0 +1,11 @@
+{
+  "name": "電影人像 | Cinematic Portrait",
+  "fields": {
+    "scene_description": "戲劇性的室內場景 | Dramatic indoor scene",
+    "time_atmosphere": "戲劇性的側光 | Dramatic side lighting",
+    "color_scheme": "冷暖色調對比 | Warm and cool color contrast",
+    "art_style": "電影風格 | Cinematic style",
+    "light_source_type": "聚光燈效果 | Spotlight effect",
+    "render_effects": "景深模糊效果 | Depth of field blur effect"
+  }
+}

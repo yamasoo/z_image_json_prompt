@@ -1,0 +1,25 @@
+柔和的擴散光線 | Soft diffused lighting
+強烈的直射光線 | Strong direct lighting
+戲劇性的側光 | Dramatic side lighting
+神秘的逆光效果 | Mysterious backlighting
+均勻的正面光 | Even front lighting
+創意的輪廓光 | Creative rim lighting
+自然的光線衰減 | Natural light falloff
+動態的光影變化 | Dynamic light and shadow play
+反射的間接光線 | Reflected indirect lighting
+多光源混合照明 | Mixed multi-source lighting
+漸變過渡光效 | Gradient transition lighting
+斑駁的光影效果 | Dappled light and shadow
+強烈的對比光影 | Strong contrast light and shadow
+柔和的過渡陰影 | Soft transitional shadows
+硬朗的清晰陰影 | Hard clear shadows
+霧氣中的漫射光 | Diffused light in fog
+水面的反射光 | Reflective light on water
+玻璃的折射光 | Refracted light through glass
+金屬的反光效果 | Metallic reflective effect
+皮膚的次表面散射 | Skin subsurface scattering
+頭髮的邊緣光 | Hair rim light
+眼睛的反射光 | Eye reflection light
+衣服的材質光感 | Clothing material lighting
+環境的全局照明 | Environmental global illumination
+體積光的上帝光 | Volumetric god rays

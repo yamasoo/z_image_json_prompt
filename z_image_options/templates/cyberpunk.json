@@ -1,0 +1,11 @@
+{
+  "name": "賽博朋克 | Cyberpunk",
+  "fields": {
+    "scene_description": "霓虹閃爍的賽博朋克街道 | Neon-lit cyberpunk street",
+    "time_atmosphere": "深夜的神秘月光 | Mysterious moonlight late at night",
+    "color_scheme": "青橙配色方案 | Teal and orange color scheme",
+    "art_style": "賽博朋克風格 | Cyberpunk style",
+    "light_source_type": "霓虹燈光 | Neon lights",
+    "render_effects": "鏡頭光暈效果 | Lens flare effect"
+  }
+}

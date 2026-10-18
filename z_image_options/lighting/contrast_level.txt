@@ -1,0 +1,25 @@
+高對比強光影 | High contrast with strong shadows
+低對比柔和過渡 | Low contrast with soft transitions
+中等對比平衡 | Medium contrast balanced
+極高對比黑白 | Extreme contrast black and white
+細膩的微對比 | Subtle micro-contrast
+動態範圍廣 | Wide dynamic range
+壓縮的暗部細節 | Compressed shadow details
+保留亮部細節 | Preserved highlight details
+S曲線對比調整 | S-curve contrast adjustment
+自然對比還原 | Natural contrast reproduction
+柔和的低對比 | Soft low contrast
+鮮明的中高對比 | Distinct medium-high contrast
+強烈的戲劇對比 | Strong dramatic contrast
+細膩的高光過渡 | Subtle highlight transition
+深沉的陰影層次 | Deep shadow gradation
+明亮的整體調性 | Bright overall tonality
+暗調的氛圍感 | Dark tone atmosphere
+中灰色調平衡 | Medium gray tone balance
+高動態範圍保留 | High dynamic range preservation
+膠片曲線對比 | Film curve contrast
+數位平面對比 | Digital flat contrast
+電影風格對比 | Cinematic style contrast
+復古褪色對比 | Vintage faded contrast
+清新通透對比 | Fresh transparent contrast
+厚重質感對比 | Heavy texture contrast

@@ -1,0 +1,11 @@
+{
+  "name": "日式動漫 – 細膩上色 | Anime Manga – Cel Shading",
+  "fields": {
+    "shading_style": "上色風格{平面描邊| 柔和漸層} | Shading style{flat cel| soft gradient}",
+    "line_quality": "線條品質{粗線| 細線| 變粗} | Line quality{thick| thin| variable}",
+    "detail_level": "細節程度{高細節| 簡約} | Detail level{high detail| minimalist}",
+    "texture_overlay": "質感疊加{紙紋| 顆粒} | Texture overlay{paper grain| pixel noise}",
+    "highlight_style": "高光樣式{鏡面| 光斑} | Highlight style{specular| lens flare}",
+    "shadow_softness": "陰影柔度{硬陰影| 柔和陰影} | Shadow softness{hard| soft}"
+  }
+}

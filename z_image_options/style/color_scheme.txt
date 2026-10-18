@@ -1,0 +1,33 @@
+青橙配色方案 | Teal and orange color scheme
+霓虹色彩搭配 | Neon color palette
+單色調配方案 | Monochromatic color scheme
+柔和粉彩色調 | Soft pastel colors
+鮮豔飽和色彩 | Vibrant saturated colors
+復古褪色色彩 | Vintage faded colors
+黑白高對比 | Black and white high contrast
+冷暖色調對比 | Warm and cool color contrast
+金屬色系搭配 | Metallic color palette
+自然大地色調 | Natural earth tones
+糖果色系搭配 | Candy color palette
+莫蘭迪色系 | Morandi color palette
+馬卡龍色系 | Macaron color palette
+賽博朋克色系 | Cyberpunk color scheme
+蒸汽龐克色系 | Steampunk color scheme
+奇幻魔法色系 | Fantasy magic color scheme
+科幻未來色系 | Sci-fi futuristic color scheme
+恐怖暗黑色系 | Horror dark color scheme
+浪漫粉色系 | Romantic pink color scheme
+清新藍綠色系 | Fresh aqua color scheme
+溫暖橙黃色系 | Warm orange-yellow color scheme
+冷靜藍紫色系 | Cool blue-purple color scheme
+自然綠色系 | Natural green color scheme
+奢華金黑色系 | Luxury gold-black color scheme
+復古褐黃色系 | Vintage sepia color scheme
+2020年代日本動畫風格 ,數位繪製畫面,攝影式構圖與電影感運鏡,真實物理感光影表現,適當體積光和景深模糊,3D CGI背景,中高明度色調,中高對比,濾鏡化調色 | 2020s Japanese animation style digitally rendered visuals, cinematic compositions and filmic camera work, realistic physical lighting effects, judicious use of volumetric lighting and depth-of-field blur, 3D CGI backgrounds, medium-to-high brightness colour palette, medium-to-high contrast, filtered colour grading.
+美式漫畫，畫面充滿張力與動態感以單人全幅圖像為主，多人場景必定聚焦於主角，較少分格，如果有分格所佔畫面都較小。色彩鮮明飽和，常見紅、藍、黃等高對比色調，角色姿態誇張而自信，而且肌肉飽滿健美，表情強烈甚至誇張，人物以西方人為主。分鏡靈活，從宏大的全景到緊湊的特寫，營造出電影般的敘事氛圍。印刷質感帶有 網點halftone 的紋理，部分元素以 局部上色partially colored突顯。動作場景中，以速度線speed lines強調衝擊力，擬聲字sound effects 直接嵌入畫面。背景細節豐富，都市、科幻或宇宙舞台皆常出現，整體風格熱血、戲劇化，充滿英雄氣息。| American comics
+畫面呈現出設計圖稿的氛圍，線條乾淨而精確，帶有工程圖般的結構感。人物造型以正面、側面與三視圖展開，比例清晰，姿態穩定，強調結構而非情感。機械設計部分則展現出分解圖與細部零件的排列，像是工業藍圖般有條理。背景保持簡潔，留白空間突顯主體，讓觀者專注於線條與結構。色彩偏向單色或低飽和度，常以灰階或淡藍色調呈現，營造出技術性與冷靜的氛圍。整體畫面強調功能性與可讀性，人物與機械的比例、關節、連接點都被精細標示，帶有設計草圖的專業感。 | Design artwork
+畫面使用飽和度極高的色彩搭配霓虹般的光輝，營造出電影般的氛圍。燈光層次分明，伴隨柔和的環境薄霧、粉彩漸層與色彩高光。冷調的藍色與紫色光暈加強了鮮明的色彩對比。構圖採用電影式角度與動態分鏡，並以戲劇化的聚光燈突顯場景深度。寬幅鏡頭或近距裁切搭配偏中心的主體，增添視覺張力；背景則呈現發光或朦朧的效果，並以輪廓光強調流動感。動態模糊凸顯動作，角色設計風格化，展現未來感或流行時尚。面部表情細膩，姿態自信，雙眼閃耀光芒，五官柔和，符合動畫風格比例。精緻的配件與富有情感的姿勢共同塑造出賽博或奇幻美學。 | Contemporary illustration
+2020年代日本動畫風格,數位繪製畫面,攝影式構圖與電影感運鏡,真實物理感光影表現,適當體積光和景深模糊,3D CGI背景,中高明度色調,中高對比,濾鏡化調色 | 2020s Japanese animation
+AAA 遊戲超高解析度遊戲渲染光追圖片，極高的真實感和沉浸感畫面由Unreal Engine UE5渲染。角色皮膚呈現自然的光澤與細節，毛孔、皺紋、油光都能在光線下清晰展現，帶有真實的次表面散射效果。服裝材質多樣，絲綢、絨布、皮革、金屬護甲等都能精確模擬，布料在動作中隨風飄動，金屬表面則反射環境光，展現出細緻的磨損與刮痕。場景細節豐富，材質表現精緻，光影運算逼真，常見 全局光照、動態陰影、體積光 等技術。角色設計高度寫實，服裝與裝備展現出複雜的材質質感，如金屬反射、布料纖維、皮革紋理。鏡頭構圖帶有電影感，常見景深模糊、廣角鏡頭、特寫鏡頭，甚至動態運鏡來強調敘事張力。。背景場景宏大，從都市到自然環境，細節層次分明，並伴隨粒子特效如煙霧、火花、雨滴。色彩表現多樣，戰鬥場景常用高對比與鮮明色彩，而敘事場景則偏向柔和、氛圍化的色調。整體畫面融合了 真實物理感、電影化敘事、細緻材質表現，讓玩家彷彿置身於一部互動電影之中。整體風格強調 沉浸式體驗、真實物理感、電影化敘事。  |  AAA game visuals
+水彩顏色輕薄透明，淡彩層次如輕霧般覆蓋紙面，紙張紋理自然透出，色彩過渡柔和，邊緣自然消散，不帶任何線條輪廓，大片色彩均勻鋪展  |  Transparent watercolour painting
+COSPLAY照片，呈現角色化外觀，髮色、瞳色、妝容戲劇化，服裝與道具細節突出。姿勢接近原作立繪，背景配合世界觀。光線強化材質與眼部細節，後期提升對比與特效，整體像角色海報而非日常人像。| COSPLAY photo

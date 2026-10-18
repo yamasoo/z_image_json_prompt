@@ -1,0 +1,11 @@
+{
+  "name": "自然寫實 | Natural Realism",
+  "fields": {
+    "scene_description": "綠意盎然的自然環境 | Lush green natural environment",
+    "time_atmosphere": "午後的柔和光線 | Soft afternoon light",
+    "color_scheme": "自然大地色調 | Natural earth tones",
+    "art_style": "寫實主義風格 | Realism style",
+    "light_source_type": "自然日光 | Natural daylight",
+    "render_effects": "全局照明效果 | Global illumination effect"
+  }
+}

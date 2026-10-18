@@ -683,7 +683,10 @@ class ZImageJSONPrompting:
         templates = cls.load_templates()
         
         # 生成模板選項列表
-        template_options = ["無模板 | No Template"]
+        template_options = [
+            "無模板 | No Template",
+            "隨機模板 | Random Template"  # 新增隨機模板選項
+        ]
         for template_id, template_data in templates.items():
             template_name = template_data.get('name', template_id)
             template_options.append(f"{template_name} | {template_id}")
@@ -741,7 +744,7 @@ class ZImageJSONPrompting:
         # 添加語言選擇參數
         input_types["language_choice"] = (["中文", "English", "雙語 | Bilingual"], {"default": "雙語 | Bilingual"})
         
-        # 添加風格模板選擇
+        # 添加風格模板選擇（包含隨機模板選項）
         input_types["style_template"] = (template_options, {"default": "無模板 | No Template"})
         
         # 添加質量控制參數
@@ -774,13 +777,26 @@ class ZImageJSONPrompting:
         detail_level = kwargs.get("detail_level", "標準 | Standard")
         negative_prompt = kwargs.get("negative_prompt", "")
         
-        # 從模板名稱中提取模板ID
+        # 處理模板選擇（包含隨機模板）
         selected_template_id = None
-        for template_id, template_data in templates.items():
-            template_name = template_data.get('name', template_id)
-            if style_template.startswith(template_name) or template_id in style_template:
-                selected_template_id = template_id
-                break
+        random_template_selected = False
+        
+        # 檢查是否選擇了隨機模板
+        if "隨機模板" in style_template or "Random Template" in style_template:
+            random_template_selected = True
+            if templates:
+                # 隨機選擇一個模板（排除"無模板"和"隨機模板"選項）
+                available_templates = list(templates.keys())
+                if available_templates:
+                    selected_template_id = random.choice(available_templates)
+                    print(f"[Z-Image] 已隨機選擇模板: {selected_template_id}")
+        else:
+            # 常規模板選擇邏輯
+            for template_id, template_data in templates.items():
+                template_name = template_data.get('name', template_id)
+                if style_template.startswith(template_name) or template_id in style_template:
+                    selected_template_id = template_id
+                    break
         
         # 定義字段映射（去掉前綴的字段名）
         field_keys = [
@@ -800,9 +816,9 @@ class ZImageJSONPrompting:
             value = kwargs.get(prefixed_key, "隨機 | Random")
             fields[key] = self._process_field_value(key, value, language_choice)
         
-        # 應用風格模板
+        # 應用風格模板（如果選擇了模板）
         if selected_template_id and selected_template_id in templates:
-            fields = self._apply_style_template(fields, selected_template_id, templates, language_choice)
+            fields = self._apply_style_template(fields, selected_template_id, templates, language_choice, random_template_selected)
         
         # 根據細節等級調整
         fields = self._adjust_detail_level(fields, detail_level, language_choice)
@@ -811,9 +827,10 @@ class ZImageJSONPrompting:
         json_data = {
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
-                "generator": "Z-Image JSON Prompt Generator v3.0",
+                "generator": "Z-Image JSON Prompt Generator v3.1",
                 "language": language_choice,
                 "style_template": selected_template_id if selected_template_id else "none",
+                "is_random_template": random_template_selected,
                 "detail_level": detail_level
             },
             
@@ -853,7 +870,7 @@ class ZImageJSONPrompting:
         json_output = json.dumps(json_data, ensure_ascii=False, indent=2)
 
         # 生成四段式文本版本
-        positive_text = self._generate_four_part_text(fields, language_choice, detail_level)
+        positive_text = self._generate_four_part_text(fields, language_choice, detail_level, random_template_selected, selected_template_id, templates)
 
         return (json_output, positive_text, negative_prompt)
 
@@ -948,7 +965,7 @@ class ZImageJSONPrompting:
         else:  # 雙語
             return text
 
-    def _apply_style_template(self, fields, template_id, templates, language_choice):
+    def _apply_style_template(self, fields, template_id, templates, language_choice, is_random=False):
         """應用風格模板"""
         if template_id not in templates:
             return fields
@@ -956,9 +973,19 @@ class ZImageJSONPrompting:
         template_data = templates[template_id]
         template_fields = template_data.get('fields', {})
         
-        for key, value in template_fields.items():
-            if key in fields and (not fields[key] or fields[key] == "無" or fields[key] == "None"):
-                fields[key] = self._process_language(value, language_choice)
+        # 如果使用隨機模板，可以選擇性地只應用部分字段
+        if is_random:
+            # 隨機決定應用哪些模板字段（增加多樣性）
+            for key, value in template_fields.items():
+                if key in fields and random.random() > 0.3:  # 70%機率應用模板字段
+                    # 檢查是否已有值，如果沒有則應用模板值
+                    if not fields[key] or fields[key] == "無" or fields[key] == "None":
+                        fields[key] = self._process_language(value, language_choice)
+        else:
+            # 完整應用模板
+            for key, value in template_fields.items():
+                if key in fields and (not fields[key] or fields[key] == "無" or fields[key] == "None"):
+                    fields[key] = self._process_language(value, language_choice)
         
         return fields
 
@@ -1005,7 +1032,7 @@ class ZImageJSONPrompting:
         
         return fields
 
-    def _generate_four_part_text(self, fields, language_choice, detail_level):
+    def _generate_four_part_text(self, fields, language_choice, detail_level, is_random_template=False, template_id=None, templates=None):
         """生成四段式文本提示"""
         # 提取細節等級名稱
         if " | " in detail_level:
@@ -1014,6 +1041,21 @@ class ZImageJSONPrompting:
             detail_level_name = detail_level
             
         parts = []
+        
+        # 添加模板資訊（如果有）
+        if is_random_template and template_id and templates and template_id in templates:
+            template_name = templates[template_id].get('name', template_id)
+            if " | " in template_name:
+                template_display = template_name.split(" | ")[0]
+            else:
+                template_display = template_name
+                
+            if language_choice == "中文":
+                parts.append(f",{template_display}")
+            elif language_choice == "English":
+                parts.append(f",{template_display}")
+            else:
+                parts.append(f",{template_display}")
         
         # 第一段：核心描述（場景 + 主體 + 姿勢）
         part1 = []
@@ -1026,11 +1068,11 @@ class ZImageJSONPrompting:
         
         if part1:
             if language_choice == "中文":
-                parts.append(f"【核心描述】{'，'.join(part1)}")
+                parts.append(f",{'，'.join(part1)}")
             elif language_choice == "English":
-                parts.append(f"【Core Description】{', '.join(part1)}")
+                parts.append(f",{', '.join(part1)}")
             else:
-                parts.append(f"【核心描述 | Core Description】{'，'.join(part1)}")
+                parts.append(f",{'，'.join(part1)}")
         
         # 第二段：環境細節（時間 + 環境）
         part2 = []
@@ -1046,11 +1088,11 @@ class ZImageJSONPrompting:
         
         if part2:
             if language_choice == "中文":
-                parts.append(f"【環境細節】{'，'.join(part2)}")
+                parts.append(f",{'，'.join(part2)}")
             elif language_choice == "English":
-                parts.append(f"【Environment Details】{', '.join(part2)}")
+                parts.append(f",{', '.join(part2)}")
             else:
-                parts.append(f"【環境細節 | Environment Details】{'，'.join(part2)}")
+                parts.append(f",{'，'.join(part2)}")
         
         # 第三段：技術參數（攝影 + 燈光）
         part3 = []
@@ -1069,11 +1111,11 @@ class ZImageJSONPrompting:
         
         if part3:
             if language_choice == "中文":
-                parts.append(f"【技術參數】{'，'.join(part3)}")
+                parts.append(f",{'，'.join(part3)}")
             elif language_choice == "English":
-                parts.append(f"【Technical Parameters】{', '.join(part3)}")
+                parts.append(f",{', '.join(part3)}")
             else:
-                parts.append(f"【技術參數 | Technical Parameters】{'，'.join(part3)}")
+                parts.append(f",{'，'.join(part3)}")
         
         # 第四段：風格強化（藝術 + 色彩 + 渲染）
         part4 = []
@@ -1098,11 +1140,11 @@ class ZImageJSONPrompting:
         
         if part4:
             if language_choice == "中文":
-                parts.append(f"【風格強化】{'，'.join(part4)}")
+                parts.append(f",{'，'.join(part4)}")
             elif language_choice == "English":
-                parts.append(f"【Style Enhancement】{', '.join(part4)}")
+                parts.append(f",{', '.join(part4)}")
             else:
-                parts.append(f"【風格強化 | Style Enhancement】{'，'.join(part4)}")
+                parts.append(f",{'，'.join(part4)}")
         
         # 合併所有段落
         separator = "\n\n" if detail_level_name in ["詳細", "極度詳細"] else "\n"

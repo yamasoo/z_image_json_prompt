@@ -1,0 +1,25 @@
+35mm f/1.4 廣角鏡頭 | 35mm f/1.4 wide-angle lens
+85mm f/1.8 人像鏡頭 | 85mm f/1.8 portrait lens
+24-70mm f/2.8 變焦鏡頭 | 24-70mm f/2.8 zoom lens
+50mm f/1.2 標準鏡頭 | 50mm f/1.2 standard lens
+135mm f/2.0 長焦鏡頭 | 135mm f/2.0 telephoto lens
+16-35mm f/4.0 超廣角 | 16-35mm f/4.0 ultra-wide angle
+70-200mm f/2.8 遠攝鏡頭 | 70-200mm f/2.8 telephoto zoom
+微距鏡頭 f/2.8 | Macro lens f/2.8
+魚眼鏡頭 8mm f/3.5 | Fisheye lens 8mm f/3.5
+移軸鏡頭 45mm f/2.8 | Tilt-shift lens 45mm f/2.8
+24mm f/1.4 超廣角大光圈 | 24mm f/1.4 ultra-wide aperture
+200mm f/2.0 長焦大光圈 | 200mm f/2.0 telephoto大光圈
+14mm f/2.8 超廣角鏡頭 | 14mm f/2.8 ultra-wide lens
+400mm f/2.8 超長焦鏡頭 | 400mm f/2.8 super telephoto
+50mm f/0.95 超大光圈 | 50mm f/0.95超大光圈
+100mm f/2.8 微距鏡頭 | 100mm f/2.8 macro lens
+28-75mm f/2.8 標準變焦 | 28-75mm f/2.8 standard zoom
+150-600mm f/5-6.3 超長變焦 | 150-600mm f/5-6.3 super zoom
+20mm f/1.8 廣角大光圈 | 20mm f/1.8 wide-angle大光圈
+300mm f/4.0 長焦定焦 | 300mm f/4.0 telephoto prime
+10-20mm f/4.5-5.6 超廣變焦 | 10-20mm f/4.5-5.6 ultra-wide zoom
+58mm f/1.2 特殊標準鏡 | 58mm f/1.2 special standard lens
+180mm f/3.5 微距鏡頭 | 180mm f/3.5 macro lens
+8-15mm f/4.0 魚眼變焦 | 8-15mm f/4.0 fisheye zoom
+600mm f/4.0 超長焦定焦 | 600mm f/4.0 super telephoto prime

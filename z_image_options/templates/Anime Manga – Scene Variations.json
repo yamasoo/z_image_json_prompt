@@ -1,0 +1,11 @@
+{
+  "name": "日式動漫 – 多樣場景 | Anime Manga – Scene Variations",
+  "fields": {
+    "scene_description": "多元化的日式動漫場景 | Diverse anime manga scene",
+    "time_atmosphere": "不同的時間與氛圍{黎明| 黃昏| 夜晚} | Varying time and atmosphere{dawn| dusk| night}",
+    "color_scheme": "變化的色彩方案{柔和| 對比| 單色} | Varying color schemes{soft| high‑contrast| monochrome}",
+    "art_style": "日式動漫的不同風格{水彩| 寫實| 機械} | Different anime styles{watercolor| realistic| mech}",
+    "light_source_type": "光源類型多樣{自然光| 霓虹燈| 月光} | Varied light sources{natural| neon| moonlight}",
+    "render_effects": "渲染效果變化{平面| 3D| 手繪} | Varying render effects{flat| 3D| hand‑drawn}"
+  }
+}

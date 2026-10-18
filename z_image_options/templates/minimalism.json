@@ -1,0 +1,11 @@
+{
+  "name": "極簡主義 | Minimalism",
+  "fields": {
+    "scene_description": "簡約的現代室內空間 | Minimalist modern interior",
+    "time_atmosphere": "均勻的正面光 | Even front lighting",
+    "color_scheme": "單色調配方案 | Monochromatic color scheme",
+    "art_style": "極簡主義風格 | Minimalist style",
+    "light_source_type": "柔光箱擴散光 | Softbox diffused light",
+    "render_effects": "環境光遮蔽 | Ambient occlusion"
+  }
+}
